@@ -1,5 +1,5 @@
 {
-  "contract_name": "fuzio_swap_orders",
+  "contract_name": "fuzio_pool",
   "contract_version": "1.2.0",
   "idl_version": "1.0.0",
   "instantiate": {

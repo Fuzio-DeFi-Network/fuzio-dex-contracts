@@ -8,7 +8,6 @@ version       = "0.1.0"
 edition       = "2021"
 repository    = "https://github.com/Fuzio-DeFi-Network/fuzio-dex-contracts"
 rust-version  = "1.68.1"
-author        = "Keyne"
 
 [profile.release]
 opt-level = 3
