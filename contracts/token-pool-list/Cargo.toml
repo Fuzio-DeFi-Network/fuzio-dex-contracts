@@ -8,6 +8,10 @@ description = "Contract to store all information of tokens and pools foor Hopers
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[features]
+# use library feature to disable all instantiate/execute/query exports
+library = []
+
 [dependencies]
 cosmwasm-schema = "1.2.5"
 cosmwasm-std = "1.2.5"

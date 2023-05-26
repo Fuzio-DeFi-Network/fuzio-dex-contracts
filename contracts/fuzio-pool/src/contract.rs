@@ -28,8 +28,6 @@ const INSTANTIATE_LP_TOKEN_REPLY_ID: u64 = 0;
 const MAX_FEE_PERCENT: &str = "1";
 //const FEE_DECIMAL_PRECISION: Uint128 = Uint128::new(10u128.pow(20));
 
-// Note, you can use StdResult in some functions where you do not
-// make use of the custom errors
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,

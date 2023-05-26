@@ -447,6 +447,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c8cbd1169bd7b4a0a20d92b9af7a7e0422888bd38a6f5ec29c1fd8c1558a272e"
 
 [[package]]
+name = "fuzio_pool"
+version = "1.2.0"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cosmwasm-storage",
+ "cw-storage-plus",
+ "cw0",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "schemars",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
 name = "fuzio_staking"
 version = "0.1.0"
 dependencies = [
@@ -456,40 +473,6 @@ dependencies = [
  "cw-storage-plus",
  "cw2",
  "cw20",
- "schemars",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "fuzio_swap_fuziodex"
-version = "1.2.0"
-dependencies = [
- "cosmwasm-schema",
- "cosmwasm-std",
- "cosmwasm-storage",
- "cw-storage-plus",
- "cw0",
- "cw2",
- "cw20",
- "cw20-base",
- "schemars",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "fuzio_swap_orders"
-version = "1.2.0"
-dependencies = [
- "cosmwasm-schema",
- "cosmwasm-std",
- "cosmwasm-storage",
- "cw-storage-plus",
- "cw0",
- "cw2",
- "cw20",
- "cw20-base",
  "schemars",
  "serde",
  "thiserror",

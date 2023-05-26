@@ -1,6 +1,5 @@
-# Fuzio-Swap
-This contract is for pools that does not include $FUZIO.
-For example RED_BLUE pool.
+# Fuzio-Pool
+This contract is for Fuzio DEX liquidity pools
 
 # Instantiation
 
