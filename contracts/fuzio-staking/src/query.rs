@@ -76,7 +76,7 @@ pub fn query_staker_info(deps: Deps, env: Env, staker: String) -> StdResult<Stak
                 compute_staker_reward(&state, &mut staker_info)?;
             }
 
-            let total_earned: Uint128;
+            let mut total_earned = vec![];
 
             let user_earned_info_key = user_earned_info_key(&staker);
             match user_earned_info_storage().may_load(deps.storage, user_earned_info_key)? {
@@ -84,7 +84,7 @@ pub fn query_staker_info(deps: Deps, env: Env, staker: String) -> StdResult<Stak
                     total_earned = user_earned_info.total_earned;
                 }
                 None => {
-                    total_earned = Uint128::zero();
+                    total_earned.push(Uint128::zero());
                 }
             }
 
@@ -98,10 +98,10 @@ pub fn query_staker_info(deps: Deps, env: Env, staker: String) -> StdResult<Stak
         }
         None => Ok(StakerInfoResponse {
             staker,
-            reward_index: Decimal::zero(),
+            reward_index: vec![Decimal::zero()],
             bond_amount: Uint128::zero(),
-            pending_reward: Uint128::zero(),
-            total_earned: Uint128::zero(),
+            pending_reward: vec![Uint128::zero()],
+            total_earned: vec![Uint128::zero()],
         }),
     }
 }

@@ -9,8 +9,8 @@ use crate::state::{Denom, StakerInfo, UnbondingInfo};
 #[cw_serde]
 pub struct InstantiateMsg {
     pub lp_token_contract: String,
-    pub reward_token: Denom,
-    pub distribution_schedule: Vec<(u64, u64, Uint128)>,
+    pub reward_token: Vec<Denom>,
+    pub distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
     pub lock_duration: u64,
 }
 
@@ -23,20 +23,15 @@ pub enum ExecuteMsg {
     /// Withdraw pending rewards
     Withdraw {},
     Redeem {},
-    /// Owner operation to stop distribution on current staking contract
-    /// and send remaining tokens to the new contract
-    MigrateStaking {
-        new_staking_contract: String,
-    },
     UpdateConfig {
-        distribution_schedule: Vec<(u64, u64, Uint128)>,
+        distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
     },
     UpdateAdmin {
         admin: String,
     },
     UpdateTokenContract {
         lp_token_contract: String,
-        reward_token: Denom,
+        reward_token: Vec<Denom>,
     },
     UpdateLockDuration {
         lock_duration: u64,
@@ -83,8 +78,8 @@ pub enum QueryMsg {
 #[cw_serde]
 pub struct ConfigResponse {
     pub lp_token_contract: String,
-    pub reward_token: Denom,
-    pub distribution_schedule: Vec<(u64, u64, Uint128)>,
+    pub reward_token: Vec<Denom>,
+    pub distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
     pub admin: String,
     pub lock_duration: u64,
 }
@@ -94,17 +89,17 @@ pub struct ConfigResponse {
 pub struct StateResponse {
     pub last_distributed: u64,
     pub total_bond_amount: Uint128,
-    pub global_reward_index: Decimal,
+    pub global_reward_index: Vec<Decimal>,
 }
 
 // We define a custom struct for each query response
 #[cw_serde]
 pub struct StakerInfoResponse {
     pub staker: String,
-    pub reward_index: Decimal,
+    pub reward_index: Vec<Decimal>,
     pub bond_amount: Uint128,
-    pub pending_reward: Uint128,
-    pub total_earned: Uint128,
+    pub pending_reward: Vec<Uint128>,
+    pub total_earned: Vec<Uint128>,
 }
 
 #[cw_serde]

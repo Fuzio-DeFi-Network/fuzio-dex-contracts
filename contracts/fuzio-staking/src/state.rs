@@ -16,8 +16,8 @@ pub enum Denom {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
     pub lp_token_contract: String,
-    pub reward_token: Denom,
-    pub distribution_schedule: Vec<(u64, u64, Uint128)>,
+    pub reward_token: Vec<Denom>,
+    pub distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
     pub admin: String,
     pub lock_duration: u64,
 }
@@ -26,15 +26,15 @@ pub struct Config {
 pub struct State {
     pub last_distributed: u64,
     pub total_bond_amount: Uint128,
-    pub global_reward_index: Decimal,
+    pub global_reward_index: Vec<Decimal>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct StakerInfo {
     pub address: String,
-    pub reward_index: Decimal,
+    pub reward_index: Vec<Decimal>,
     pub bond_amount: Uint128,
-    pub pending_reward: Uint128,
+    pub pending_reward: Vec<Uint128>,
 }
 
 pub type StakerInfoKey<'a> = String;
@@ -69,7 +69,7 @@ pub fn staker_info_storage<'a>(
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct UserEarnedInfo {
     pub address: String,
-    pub total_earned: Uint128,
+    pub total_earned: Vec<Uint128>,
 }
 
 pub type UserEarnedInfoKey<'a> = String;

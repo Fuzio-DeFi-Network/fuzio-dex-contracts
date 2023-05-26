@@ -38,4 +38,8 @@ pub enum ContractError {
 
     #[error("Cannot migrate from different contract type: {previous_contract}")]
     CannotMigrate { previous_contract: String },
+
+    #[error("Length of rewards and distribution schedules must be the same")]
+    InvalidSchedules {},
+
 }

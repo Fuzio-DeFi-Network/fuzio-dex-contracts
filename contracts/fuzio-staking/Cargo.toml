@@ -35,6 +35,3 @@ thiserror = "1.0.40"
 serde = { version = "1.0.162", default-features = false, features = ["derive"] }
 cw20 = "1.0.1"
 cosmwasm-schema = "1.2.5"
-
-[dev-dependencies]
-cosmwasm-vm = "1.0.0-beta"
