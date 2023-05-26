@@ -1,0 +1,22 @@
+[workspace]
+members = [
+    "contracts/*"
+]
+
+[workspace.package]
+version       = "0.1.0"
+edition       = "2021"
+repository    = "https://github.com/Fuzio-DeFi-Network/fuzio-dex-contracts"
+rust-version  = "1.68.1"
+author        = "Keyne"
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = true

@@ -1,0 +1,40 @@
+[package]
+name = "fuzio_staking"
+version = "0.1.0"
+authors = ["Keyne"]
+edition = "2018"
+description = "Fuzio LP token staking contract"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = true
+
+[features]
+backtraces = ["cosmwasm-std/backtraces"]
+
+[dependencies]
+
+cosmwasm-std = "1.2.5"
+cosmwasm-storage = "1.2.5"
+cw-storage-plus = "1.0.1"
+schemars = "0.8.12"
+cw2 = "1.0.1"
+thiserror = "1.0.40"
+serde = { version = "1.0.162", default-features = false, features = ["derive"] }
+cw20 = "1.0.1"
+cosmwasm-schema = "1.2.5"
+
+[dev-dependencies]
+cosmwasm-vm = "1.0.0-beta"

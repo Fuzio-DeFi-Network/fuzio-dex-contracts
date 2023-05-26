@@ -1,0 +1,40 @@
+[package]
+name = "fuzio_swap_orders"
+version = "1.2.0"
+authors = ["Keyne"]
+edition = "2018"
+description = "Cosmwasm AMM"
+license = "Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = true
+
+[features]
+# use library feature to disable all instantiate/execute/query exports
+library = []
+
+[dependencies]
+cw20-base = { version = "1.0.1", features = ["library"] }
+cw-storage-plus = "1.0.1"
+schemars = "0.8.12"
+serde = { version = "1.0.162", default-features = false, features = ["derive"] }
+thiserror = "1.0.40"
+cosmwasm-schema = "1.2.5"
+cw2 = "1.0.1"
+cw20 = "1.0.1"
+cosmwasm-std = "1.2.5"
+cosmwasm-storage = "1.2.5"
+cw0 = "0.10.3"

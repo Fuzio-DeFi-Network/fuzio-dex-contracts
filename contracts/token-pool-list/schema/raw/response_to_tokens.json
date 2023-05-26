@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TokensResp",
+  "type": "object",
+  "required": [
+    "tokens"
+  ],
+  "properties": {
+    "tokens": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Token"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Chain": {
+      "type": "object",
+      "required": [
+        "chain_id",
+        "chain_name",
+        "gas_price",
+        "is_evm"
+      ],
+      "properties": {
+        "chain_id": {
+          "type": "string"
+        },
+        "chain_name": {
+          "type": "string"
+        },
+        "gas_price": {
+          "$ref": "#/definitions/GasPrice"
+        },
+        "ibc_channels": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IbcChannels"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "is_evm": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "GasPrice": {
+      "type": "object",
+      "required": [
+        "amount",
+        "denom"
+      ],
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "denom": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "IbcChannels": {
+      "type": "object",
+      "required": [
+        "deposit_channel",
+        "withdraw_channel"
+      ],
+      "properties": {
+        "deposit_channel": {
+          "type": "string"
+        },
+        "withdraw_channel": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Token": {
+      "type": "object",
+      "required": [
+        "chain",
+        "decimal",
+        "denom",
+        "full_name",
+        "is_ibc_coin",
+        "is_native_coin",
+        "logo_uri",
+        "symbol"
+      ],
+      "properties": {
+        "chain": {
+          "$ref": "#/definitions/Chain"
+        },
+        "decimal": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "denom": {
+          "type": "string"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "is_ibc_coin": {
+          "type": "boolean"
+        },
+        "is_native_coin": {
+          "type": "boolean"
+        },
+        "logo_uri": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
