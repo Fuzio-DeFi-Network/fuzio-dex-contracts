@@ -82,6 +82,11 @@ pub fn execute(
         ExecuteMsg::UpdateLockDuration { lock_duration } => {
             update_lock_duration(deps, info, lock_duration)
         }
+        ExecuteMsg::UpdateTokensAndDistribution {
+            lp_token_contract,
+            reward_token,
+            distribution_schedule,
+        } => update_tokens_and_distribution(deps, info, lp_token_contract, reward_token, distribution_schedule),
     }
 }
 
@@ -405,6 +410,32 @@ pub fn update_token_contract(
 
     config.reward_token = reward_token;
     config.lp_token_contract = lp_contract;
+
+    CONFIG.save(deps.storage, &config)?;
+
+    Ok(Response::new().add_attributes(vec![("action", "update_token_contract")]))
+}
+
+pub fn update_tokens_and_distribution(
+    deps: DepsMut,
+    info: MessageInfo,
+    lp_contract: String,
+    reward_token: Vec<Denom>,
+    distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+) -> Result<Response, ContractError> {
+    let mut config = CONFIG.load(deps.storage)?;
+
+    deps.api.addr_validate(&lp_contract)?;
+
+    authcheck(deps.as_ref(), &info)?;
+
+    if reward_token.len() != distribution_schedule.len() {
+        return Err(ContractError::InvalidSchedules {});
+    }
+
+    config.reward_token = reward_token;
+    config.lp_token_contract = lp_contract;
+    config.distribution_schedule = distribution_schedule;
 
     CONFIG.save(deps.storage, &config)?;
 

@@ -33,6 +33,11 @@ pub enum ExecuteMsg {
         lp_token_contract: String,
         reward_token: Vec<Denom>,
     },
+    UpdateTokensAndDistribution{
+        lp_token_contract: String,
+        reward_token: Vec<Denom>,
+        distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+    },
     UpdateLockDuration {
         lock_duration: u64,
     },

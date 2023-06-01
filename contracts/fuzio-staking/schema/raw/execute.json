@@ -158,6 +158,61 @@
     {
       "type": "object",
       "required": [
+        "update_tokens_and_distribution"
+      ],
+      "properties": {
+        "update_tokens_and_distribution": {
+          "type": "object",
+          "required": [
+            "distribution_schedule",
+            "lp_token_contract",
+            "reward_token"
+          ],
+          "properties": {
+            "distribution_schedule": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "integer",
+                      "format": "uint64",
+                      "minimum": 0.0
+                    },
+                    {
+                      "type": "integer",
+                      "format": "uint64",
+                      "minimum": 0.0
+                    },
+                    {
+                      "$ref": "#/definitions/Uint128"
+                    }
+                  ],
+                  "maxItems": 3,
+                  "minItems": 3
+                }
+              }
+            },
+            "lp_token_contract": {
+              "type": "string"
+            },
+            "reward_token": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Denom"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
         "update_lock_duration"
       ],
       "properties": {
