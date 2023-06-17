@@ -9,7 +9,7 @@ use crate::query::query_all_unbonding_info;
 use crate::state::{
     staker_info_key, staker_info_storage, unbonding_info_key, unbonding_info_storage,
     user_earned_info_key, user_earned_info_storage, Config, Denom, StakerInfo, State,
-    UnbondingInfo, UserEarnedInfo, CONFIG, STATE,
+    UnbondingInfo, UserEarnedInfo, CONFIG, STATE, Schedule,
 };
 
 use cw2::{get_contract_version, set_contract_version};
@@ -355,7 +355,7 @@ pub fn update_config(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
-    distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+    distribution_schedule: Vec<Vec<Schedule>>,
 ) -> Result<Response, ContractError> {
     let config = CONFIG.load(deps.storage)?;
     let state = STATE.load(deps.storage)?;
@@ -421,7 +421,7 @@ pub fn update_tokens_and_distribution(
     info: MessageInfo,
     lp_contract: String,
     reward_token: Vec<Denom>,
-    distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+    distribution_schedule: Vec<Vec<Schedule>>,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
 
@@ -468,7 +468,7 @@ fn authcheck(deps: Deps, info: &MessageInfo) -> Result<(), ContractError> {
 pub fn assert_new_schedules(
     config: &Config,
     state: &State,
-    distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+    distribution_schedule: Vec<Vec<Schedule>>,
 ) -> Result<(), ContractError> {
     if distribution_schedule.len() < config.distribution_schedule.len() {
         return Err(ContractError::InvalidSchedules {});
@@ -481,13 +481,13 @@ pub fn assert_new_schedules(
     }
 
     for (index, _item) in distribution_schedule.iter().enumerate() {
-        let mut existing_counts: BTreeMap<(u64, u64, Uint128), u32> = BTreeMap::new();
+        let mut existing_counts: BTreeMap<Schedule, u32> = BTreeMap::new();
         for schedule in config.distribution_schedule[index].iter() {
             let counter = existing_counts.entry(*schedule).or_insert(0);
             *counter += 1;
         }
 
-        let mut new_counts: BTreeMap<(u64, u64, Uint128), u32> = BTreeMap::new();
+        let mut new_counts: BTreeMap<Schedule, u32> = BTreeMap::new();
         for schedule in distribution_schedule[index].iter() {
             let counter = new_counts.entry(*schedule).or_insert(0);
             *counter += 1;
@@ -495,7 +495,7 @@ pub fn assert_new_schedules(
 
         for (schedule, count) in existing_counts.into_iter() {
             // if began ensure its in the new schedule
-            if schedule.0 <= state.last_distributed {
+            if schedule.start_time <= state.last_distributed {
                 if count > *new_counts.get(&schedule).unwrap_or(&0u32) {
                     return Err(ContractError::NewScheduleRemovePastDistribution {});
                 }
@@ -505,7 +505,7 @@ pub fn assert_new_schedules(
         }
 
         for (schedule, count) in new_counts.into_iter() {
-            if count > 0 && schedule.0 <= state.last_distributed {
+            if count > 0 && schedule.start_time <= state.last_distributed {
                 return Err(ContractError::NewScheduleAddPastDistribution {});
             }
         }
@@ -525,16 +525,16 @@ pub fn compute_reward(config: &Config, state: &mut State, block_time: u64) {
 
     for (index, i) in config.distribution_schedule.iter().enumerate() {
         for s in i.iter() {
-            if s.0 > block_time || s.1 < state.last_distributed {
+            if s.start_time> block_time || s.end_time < state.last_distributed {
                 continue;
             }
 
             // min(s.1, block_time) - max(s.0, last_distributed)
             let passed_time =
-                std::cmp::min(s.1, block_time) - std::cmp::max(s.0, state.last_distributed);
+                std::cmp::min(s.end_time, block_time) - std::cmp::max(s.start_time, state.last_distributed);
 
-            let time = s.1 - s.0;
-            let distribution_amount_per_second: Decimal = Decimal::from_ratio(s.2, time);
+            let time = s.end_time - s.start_time;
+            let distribution_amount_per_second: Decimal = Decimal::from_ratio(s.amount, time);
             distributed_amount[index] +=
                 distribution_amount_per_second * Uint128::from(passed_time as u128);
         }

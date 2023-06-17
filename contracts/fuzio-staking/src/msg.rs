@@ -4,13 +4,14 @@ use cosmwasm_schema::QueryResponses;
 use cosmwasm_std::{Decimal, Uint128};
 use cw20::Cw20ReceiveMsg;
 
+use crate::state::Schedule;
 use crate::state::{Denom, StakerInfo, UnbondingInfo};
 
 #[cw_serde]
 pub struct InstantiateMsg {
     pub lp_token_contract: String,
     pub reward_token: Vec<Denom>,
-    pub distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+    pub distribution_schedule: Vec<Vec<Schedule>>,
     pub lock_duration: u64,
 }
 
@@ -24,7 +25,7 @@ pub enum ExecuteMsg {
     Withdraw {},
     Redeem {},
     UpdateConfig {
-        distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+        distribution_schedule: Vec<Vec<Schedule>>,
     },
     UpdateAdmin {
         admin: String,
@@ -33,10 +34,10 @@ pub enum ExecuteMsg {
         lp_token_contract: String,
         reward_token: Vec<Denom>,
     },
-    UpdateTokensAndDistribution{
+    UpdateTokensAndDistribution {
         lp_token_contract: String,
         reward_token: Vec<Denom>,
-        distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+        distribution_schedule: Vec<Vec<Schedule>>,
     },
     UpdateLockDuration {
         lock_duration: u64,
@@ -59,13 +60,9 @@ pub enum QueryMsg {
     #[returns(ConfigResponse)]
     Config {},
     #[returns(StateResponse)]
-    State {
-        block_time: Option<u64>,
-    },
+    State { block_time: Option<u64> },
     #[returns(StakerInfoResponse)]
-    StakerInfo {
-        staker: String,
-    },
+    StakerInfo { staker: String },
     #[returns(StakersListResponse)]
     AllStakers {
         start_after: Option<String>,
@@ -84,7 +81,7 @@ pub enum QueryMsg {
 pub struct ConfigResponse {
     pub lp_token_contract: String,
     pub reward_token: Vec<Denom>,
-    pub distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+    pub distribution_schedule: Vec<Vec<Schedule>>,
     pub admin: String,
     pub lock_duration: u64,
 }

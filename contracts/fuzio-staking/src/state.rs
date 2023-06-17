@@ -17,7 +17,7 @@ pub enum Denom {
 pub struct Config {
     pub lp_token_contract: String,
     pub reward_token: Vec<Denom>,
-    pub distribution_schedule: Vec<Vec<(u64, u64, Uint128)>>,
+    pub distribution_schedule: Vec<Vec<Schedule>>,
     pub admin: String,
     pub lock_duration: u64,
 }
@@ -36,6 +36,14 @@ pub struct StakerInfo {
     pub bond_amount: Uint128,
     pub pending_reward: Vec<Uint128>,
 }
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Eq, Ord, PartialOrd, Copy)]
+pub struct Schedule {
+    pub start_time: u64,
+    pub end_time: u64,
+    pub amount: Uint128,
+}
+
 
 pub type StakerInfoKey<'a> = String;
 
