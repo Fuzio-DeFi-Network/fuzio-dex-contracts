@@ -11,7 +11,7 @@ use crate::state::{Denom, StakerInfo, UnbondingInfo};
 pub struct InstantiateMsg {
     pub lp_token_contract: String,
     pub reward_token: Vec<Denom>,
-    pub distribution_schedule: Vec<Vec<Schedule>>,
+    pub distribution_schedule: Vec<Schedule>,
     pub lock_duration: u64,
 }
 
@@ -24,11 +24,11 @@ pub enum ExecuteMsg {
     /// Withdraw pending rewards
     Withdraw {},
     Redeem {},
-    UpdateConfig {
-        distribution_schedule: Vec<Vec<Schedule>>,
-    },
     UpdateAdmin {
         admin: String,
+    },
+    UpdateConfig {
+        distribution_schedule: Vec<Schedule>
     },
     UpdateTokenContract {
         lp_token_contract: String,
@@ -37,7 +37,7 @@ pub enum ExecuteMsg {
     UpdateTokensAndDistribution {
         lp_token_contract: String,
         reward_token: Vec<Denom>,
-        distribution_schedule: Vec<Vec<Schedule>>,
+        distribution_schedule: Vec<Schedule>,
     },
     UpdateLockDuration {
         lock_duration: u64,
@@ -81,7 +81,7 @@ pub enum QueryMsg {
 pub struct ConfigResponse {
     pub lp_token_contract: String,
     pub reward_token: Vec<Denom>,
-    pub distribution_schedule: Vec<Vec<Schedule>>,
+    pub distribution_schedule: Vec<Schedule>,
     pub admin: String,
     pub lock_duration: u64,
 }

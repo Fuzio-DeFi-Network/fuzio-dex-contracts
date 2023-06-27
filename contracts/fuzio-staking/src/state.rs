@@ -17,7 +17,7 @@ pub enum Denom {
 pub struct Config {
     pub lp_token_contract: String,
     pub reward_token: Vec<Denom>,
-    pub distribution_schedule: Vec<Vec<Schedule>>,
+    pub distribution_schedule: Vec<Schedule>,
     pub admin: String,
     pub lock_duration: u64,
 }

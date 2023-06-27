@@ -16,10 +16,7 @@
       "distribution_schedule": {
         "type": "array",
         "items": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Schedule"
-          }
+          "$ref": "#/definitions/Schedule"
         }
       },
       "lock_duration": {
@@ -167,6 +164,27 @@
       {
         "type": "object",
         "required": [
+          "update_admin"
+        ],
+        "properties": {
+          "update_admin": {
+            "type": "object",
+            "required": [
+              "admin"
+            ],
+            "properties": {
+              "admin": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
           "update_config"
         ],
         "properties": {
@@ -179,32 +197,8 @@
               "distribution_schedule": {
                 "type": "array",
                 "items": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Schedule"
-                  }
+                  "$ref": "#/definitions/Schedule"
                 }
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "update_admin"
-        ],
-        "properties": {
-          "update_admin": {
-            "type": "object",
-            "required": [
-              "admin"
-            ],
-            "properties": {
-              "admin": {
-                "type": "string"
               }
             },
             "additionalProperties": false
@@ -257,10 +251,7 @@
               "distribution_schedule": {
                 "type": "array",
                 "items": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Schedule"
-                  }
+                  "$ref": "#/definitions/Schedule"
                 }
               },
               "lp_token_contract": {
@@ -595,10 +586,7 @@
         "distribution_schedule": {
           "type": "array",
           "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/Schedule"
-            }
+            "$ref": "#/definitions/Schedule"
           }
         },
         "lock_duration": {

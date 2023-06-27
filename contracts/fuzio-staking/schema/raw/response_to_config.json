@@ -16,10 +16,7 @@
     "distribution_schedule": {
       "type": "array",
       "items": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/Schedule"
-        }
+        "$ref": "#/definitions/Schedule"
       }
     },
     "lock_duration": {

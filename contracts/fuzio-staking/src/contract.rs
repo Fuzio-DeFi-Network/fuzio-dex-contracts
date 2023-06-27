@@ -8,8 +8,8 @@ use crate::msg::{Cw20HookMsg, ExecuteMsg, InstantiateMsg, MigrateMsg};
 use crate::query::query_all_unbonding_info;
 use crate::state::{
     staker_info_key, staker_info_storage, unbonding_info_key, unbonding_info_storage,
-    user_earned_info_key, user_earned_info_storage, Config, Denom, StakerInfo, State,
-    UnbondingInfo, UserEarnedInfo, CONFIG, STATE, Schedule,
+    user_earned_info_key, user_earned_info_storage, Config, Denom, Schedule, StakerInfo, State,
+    UnbondingInfo, UserEarnedInfo, CONFIG, STATE,
 };
 
 use cw2::{get_contract_version, set_contract_version};
@@ -86,7 +86,13 @@ pub fn execute(
             lp_token_contract,
             reward_token,
             distribution_schedule,
-        } => update_tokens_and_distribution(deps, info, lp_token_contract, reward_token, distribution_schedule),
+        } => update_tokens_and_distribution(
+            deps,
+            info,
+            lp_token_contract,
+            reward_token,
+            distribution_schedule,
+        ),
     }
 }
 
@@ -355,7 +361,7 @@ pub fn update_config(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
-    distribution_schedule: Vec<Vec<Schedule>>,
+    distribution_schedule: Vec<Schedule>,
 ) -> Result<Response, ContractError> {
     let config = CONFIG.load(deps.storage)?;
     let state = STATE.load(deps.storage)?;
@@ -421,7 +427,7 @@ pub fn update_tokens_and_distribution(
     info: MessageInfo,
     lp_contract: String,
     reward_token: Vec<Denom>,
-    distribution_schedule: Vec<Vec<Schedule>>,
+    distribution_schedule: Vec<Schedule>,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
 
@@ -468,30 +474,20 @@ fn authcheck(deps: Deps, info: &MessageInfo) -> Result<(), ContractError> {
 pub fn assert_new_schedules(
     config: &Config,
     state: &State,
-    distribution_schedule: Vec<Vec<Schedule>>,
+    distribution_schedule: Vec<Schedule>,
 ) -> Result<(), ContractError> {
     if distribution_schedule.len() < config.distribution_schedule.len() {
         return Err(ContractError::InvalidSchedules {});
     }
 
-    for (index, i) in config.distribution_schedule.iter().enumerate() {
-        if i.len() < config.distribution_schedule[index].len() {
-            return Err(ContractError::NotIncludeAllDistributionSchedule {});
-        }
-    }
-
-    for (index, _item) in distribution_schedule.iter().enumerate() {
+    for (_index, schedule) in distribution_schedule.iter().enumerate() {
         let mut existing_counts: BTreeMap<Schedule, u32> = BTreeMap::new();
-        for schedule in config.distribution_schedule[index].iter() {
-            let counter = existing_counts.entry(*schedule).or_insert(0);
-            *counter += 1;
-        }
+        let counter = existing_counts.entry(*schedule).or_insert(0);
+        *counter += 1;
 
         let mut new_counts: BTreeMap<Schedule, u32> = BTreeMap::new();
-        for schedule in distribution_schedule[index].iter() {
-            let counter = new_counts.entry(*schedule).or_insert(0);
-            *counter += 1;
-        }
+        let counter = new_counts.entry(*schedule).or_insert(0);
+        *counter += 1;
 
         for (schedule, count) in existing_counts.into_iter() {
             // if began ensure its in the new schedule
@@ -523,21 +519,19 @@ pub fn compute_reward(config: &Config, state: &mut State, block_time: u64) {
 
     let mut distributed_amount = vec![Uint128::zero(); config.distribution_schedule.len()];
 
-    for (index, i) in config.distribution_schedule.iter().enumerate() {
-        for s in i.iter() {
-            if s.start_time> block_time || s.end_time < state.last_distributed {
-                continue;
-            }
-
-            // min(s.1, block_time) - max(s.0, last_distributed)
-            let passed_time =
-                std::cmp::min(s.end_time, block_time) - std::cmp::max(s.start_time, state.last_distributed);
-
-            let time = s.end_time - s.start_time;
-            let distribution_amount_per_second: Decimal = Decimal::from_ratio(s.amount, time);
-            distributed_amount[index] +=
-                distribution_amount_per_second * Uint128::from(passed_time as u128);
+    for (index, schedule) in config.distribution_schedule.iter().enumerate() {
+        if schedule.start_time > block_time || schedule.end_time < state.last_distributed {
+            continue;
         }
+
+        // min(s.1, block_time) - max(s.0, last_distributed)
+        let passed_time = std::cmp::min(schedule.end_time, block_time)
+            - std::cmp::max(schedule.start_time, state.last_distributed);
+
+        let time = schedule.end_time - schedule.start_time;
+        let distribution_amount_per_second: Decimal = Decimal::from_ratio(schedule.amount, time);
+        distributed_amount[index] +=
+            distribution_amount_per_second * Uint128::from(passed_time as u128);
 
         state.global_reward_index[index] +=
             Decimal::from_ratio(distributed_amount[index], state.total_bond_amount);
@@ -588,3 +582,4 @@ pub fn migrate(deps: DepsMut, _env: Env, _msg: MigrateMsg) -> Result<Response, C
     }
     Ok(Response::default())
 }
+
