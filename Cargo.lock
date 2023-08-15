@@ -460,7 +460,7 @@ checksum = "c8cbd1169bd7b4a0a20d92b9af7a7e0422888bd38a6f5ec29c1fd8c1558a272e"
 
 [[package]]
 name = "fuzio_pool"
-version = "1.2.0"
+version = "1.2.1"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
@@ -477,7 +477,7 @@ dependencies = [
 
 [[package]]
 name = "fuzio_staking"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",

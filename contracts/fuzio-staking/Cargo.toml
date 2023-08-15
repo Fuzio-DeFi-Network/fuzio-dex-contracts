@@ -1,6 +1,6 @@
 [package]
 name = "fuzio_staking"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Keyne"]
 edition = "2018"
 description = "Fuzio LP token staking contract"

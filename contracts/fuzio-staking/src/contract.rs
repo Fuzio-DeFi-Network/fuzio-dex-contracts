@@ -476,7 +476,7 @@ pub fn assert_new_schedules(
     state: &State,
     distribution_schedule: Vec<Schedule>,
 ) -> Result<(), ContractError> {
-    if distribution_schedule.len() < config.distribution_schedule.len() {
+    if distribution_schedule.len() != config.distribution_schedule.len() {
         return Err(ContractError::InvalidSchedules {});
     }
 
