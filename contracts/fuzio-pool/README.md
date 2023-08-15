@@ -16,7 +16,7 @@ The contract can be instantiated with the following messages
     "fee_percent_denominator": "<FEE_PERCENT_DENOMINATOR>",
     "lp_token_name": "<LP_TOKEN_NAME>",
     "lp_token_symbol": "<LP_TOKEN_SYMBOL>"
-    "dev_wallet_list": [{"address": "<DEV_WALLET_1>", "ratio": "<RATIO_1>"},...]
+    "dev_wallet_lists": [{"address": "<DEV_WALLET_1>", "ratio": "<RATIO_1>"},...]
 }
 ```
 
