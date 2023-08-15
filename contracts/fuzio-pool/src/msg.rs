@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use cw20::BalanceResponse;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_schema::QueryResponses;
 
@@ -73,11 +71,6 @@ pub enum ExecuteMsg {
 #[cw_serde]
 #[derive(QueryResponses)]
 pub enum QueryMsg {
-    /// Implements CW20. Returns the current balance of the given address, 0 if unset.
-    #[returns(BalanceResponse)]
-    Balance {
-        address: String,
-    },
     #[returns(InfoResponse)]
     Info {},
     #[returns(Token1ForToken2PriceResponse)]

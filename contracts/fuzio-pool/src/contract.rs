@@ -9,8 +9,6 @@ use cw0::parse_reply_instantiate_data;
 use cw2::{get_contract_version, set_contract_version};
 use cw20::Denom::Cw20;
 use cw20::{Cw20ExecuteMsg, Denom, Expiration, MinterResponse};
-use cw20_base::contract::query_balance;
-
 use crate::error::ContractError;
 use crate::msg::{
     ExecuteMsg, FeeResponse, InfoResponse, InstantiateMsg, MigrateMsg, QueryMsg,
@@ -964,7 +962,6 @@ pub fn execute_pass_through_swap(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::Balance { address } => to_binary(&query_balance(deps, address)?),
         QueryMsg::Info {} => to_binary(&query_info(deps)?),
         QueryMsg::Token1ForToken2Price { token1_amount } => {
             to_binary(&query_token1_for_token2_price(deps, token1_amount)?)
