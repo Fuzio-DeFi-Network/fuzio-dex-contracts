@@ -64,8 +64,8 @@ pub enum ContractError {
         total_fee_percent: Decimal,
     },
 
-    #[error("InsufficientFunds")]
-    InsufficientFunds {},
+    #[error("Input amounts and funds must match")]
+    MismatchedFunds {},
 
     #[error("Uknown reply id: {id}")]
     UnknownReplyId { id: u64 },

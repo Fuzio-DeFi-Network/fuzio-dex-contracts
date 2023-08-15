@@ -1,20 +1,19 @@
 use std::str::FromStr;
 
-use cosmwasm_std::{
-    attr, entry_point, to_binary, Addr, Binary, BlockInfo, Coin, CosmosMsg, Decimal, Deps, DepsMut,
-    Env, MessageInfo, Reply, Response, StdError, StdResult, SubMsg, Uint128,
-    WasmMsg,
-};
-use cw0::parse_reply_instantiate_data;
-use cw2::{get_contract_version, set_contract_version};
-use cw20::Denom::Cw20;
-use cw20::{Cw20ExecuteMsg, Denom, Expiration, MinterResponse};
 use crate::error::ContractError;
 use crate::msg::{
     ExecuteMsg, FeeResponse, InfoResponse, InstantiateMsg, MigrateMsg, QueryMsg,
     Token1ForToken2PriceResponse, Token2ForToken1PriceResponse, TokenSelect, WalletInfo,
 };
 use crate::state::{Fees, Token, FEES, LP_TOKEN, OWNER, TOKEN1, TOKEN2};
+use cosmwasm_std::{
+    attr, entry_point, to_binary, Addr, Binary, BlockInfo, Coin, CosmosMsg, Decimal, Deps, DepsMut,
+    Env, MessageInfo, Reply, Response, StdError, StdResult, SubMsg, Uint128, WasmMsg,
+};
+use cw0::parse_reply_instantiate_data;
+use cw2::{get_contract_version, set_contract_version};
+use cw20::Denom::Cw20;
+use cw20::{Cw20ExecuteMsg, Denom, Expiration, MinterResponse};
 
 // Version info for migration info
 const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
@@ -30,7 +29,7 @@ const MAX_FEE_PERCENT: &str = "1";
 pub fn instantiate(
     deps: DepsMut,
     env: Env,
-    info: MessageInfo,
+    _info: MessageInfo,
     msg: InstantiateMsg,
 ) -> Result<Response, ContractError> {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
@@ -46,6 +45,8 @@ pub fn instantiate(
         reserve: Uint128::zero(),
     };
     TOKEN2.save(deps.storage, &token2)?;
+
+    if token1.denom == token2.denom {}
 
     let owner = msg.owner.map(|h| deps.api.addr_validate(&h)).transpose()?;
     OWNER.save(deps.storage, &owner)?;
@@ -82,7 +83,7 @@ pub fn instantiate(
     let instantiate_lp_token_msg = WasmMsg::Instantiate {
         code_id: msg.lp_token_code_id,
         funds: vec![],
-        admin: Some(info.sender.to_string()),
+        admin: None,
         label: msg.lp_token_name.clone(),
         msg: to_binary(&cw20_base::msg::InstantiateMsg {
             name: msg.lp_token_name,
@@ -388,7 +389,7 @@ fn validate_input_amount(
         Denom::Native(denom) => {
             let actual = get_amount_for_denom(actual_funds, denom);
             if actual.amount != given_amount {
-                return Err(ContractError::InsufficientFunds {});
+                return Err(ContractError::MismatchedFunds {});
             }
             if &actual.denom != denom {
                 return Err(ContractError::IncorrectNativeDenom {
