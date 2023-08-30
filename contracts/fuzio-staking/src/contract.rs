@@ -449,6 +449,8 @@ pub fn update_tokens_and_distribution(
 
     state.global_reward_index.push(Decimal::zero());
 
+    STATE.save(deps.storage, &state)?;
+
     Ok(Response::new().add_attributes(vec![("action", "update_token_contract")]))
 }
 
