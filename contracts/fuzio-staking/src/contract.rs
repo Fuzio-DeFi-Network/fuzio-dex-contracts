@@ -447,7 +447,9 @@ pub fn update_tokens_and_distribution(
 
     let mut state = STATE.load(deps.storage)?;
 
-    state.global_reward_index.push(Decimal::zero());
+    while state.global_reward_index.len() < config.distribution_schedule.len() {
+        state.global_reward_index.push(Decimal::zero());
+    }
 
     STATE.save(deps.storage, &state)?;
 
@@ -548,6 +550,11 @@ pub fn compute_reward(config: &Config, state: &mut State, block_time: u64) {
 
 // withdraw reward to pending reward
 pub fn compute_staker_reward(state: &State, staker_info: &mut StakerInfo) -> StdResult<()> {
+    while state.global_reward_index.len() > staker_info.reward_index.len() {
+        staker_info.reward_index.push(Decimal::zero());
+        staker_info.pending_reward.push(Uint128::zero());
+    }
+
     for index in 0..staker_info.reward_index.len() {
         let pending_reward = (staker_info.bond_amount * state.global_reward_index[index])
             .checked_sub(staker_info.bond_amount * staker_info.reward_index[index])?;
@@ -581,7 +588,6 @@ pub fn migrate(deps: DepsMut, _env: Env, _msg: MigrateMsg) -> Result<Response, C
             previous_contract: version.contract,
         });
     }
-    
+
     Ok(Response::default())
 }
-
