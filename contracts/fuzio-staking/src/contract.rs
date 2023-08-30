@@ -445,6 +445,10 @@ pub fn update_tokens_and_distribution(
 
     CONFIG.save(deps.storage, &config)?;
 
+    let mut state = STATE.load(deps.storage)?;
+
+    state.global_reward_index.push(Decimal::zero());
+
     Ok(Response::new().add_attributes(vec![("action", "update_token_contract")]))
 }
 
@@ -575,11 +579,7 @@ pub fn migrate(deps: DepsMut, _env: Env, _msg: MigrateMsg) -> Result<Response, C
             previous_contract: version.contract,
         });
     }
-    if version.version != CONTRACT_VERSION {
-        return Err(ContractError::CannotMigrate {
-            previous_contract: version.contract,
-        });
-    }
+    
     Ok(Response::default())
 }
 
